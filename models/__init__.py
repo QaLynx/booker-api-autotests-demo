@@ -1,3 +1,3 @@
-from auth import AuthRequest
+from .auth import AuthRequest
 
 __all__ = ["AuthRequest"]
