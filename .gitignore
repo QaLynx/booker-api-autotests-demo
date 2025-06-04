@@ -21,3 +21,4 @@ logs/
 Thumbs.db
 /Y
 /Y.pub
+/.env
