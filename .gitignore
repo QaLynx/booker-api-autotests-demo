@@ -1,4 +1,23 @@
-.venv/
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.env
-allure-results/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# Logs
+logs/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+/Y
+/Y.pub
