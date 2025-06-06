@@ -1,5 +1,7 @@
+from typing import Union
+
 from pydantic import BaseModel
 
 class AuthRequest(BaseModel):
-    username: str
-    password: str
+    username: Union[str, int]
+    password: Union[str, int]

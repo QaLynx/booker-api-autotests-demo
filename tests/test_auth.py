@@ -1,30 +1,43 @@
-import os
-import requests
-from models.auth import AuthRequest
-from dotenv import load_dotenv
-from logger import logger
+import pytest
+from conftest import make_auth_request, fake_username, fake_password
 
-load_dotenv()
-BASE_URL = os.getenv("BASE_URL")
+@pytest.mark.parametrize(
+    "username, password, expected_status, expected_reason",
+    [
+        ("admin", "password123", 200, None),
+        (fake_username(), "password123", 200, "Bad credentials"),
+        ("admin", fake_password(), 200, "Bad credentials"),
+        (fake_username(), fake_password(), 200, "Bad credentials"),
+        ("", "password123", 200, "Bad credentials"),
+        ("admin", "", 200, "Bad credentials"),
+        (1, "", 200, "Bad credentials"),
+        (10, 1, 200, "Bad credentials")
+    ],
+    ids=[
+        "Valid credentials",
+        "Invalid username",
+        "Invalid password",
+        "Invalid username and password",
+        "Empty username",
+        "Empty password",
+        "Numeric username",
+        "Numeric username and password"
+    ]
+)
+def test_auth(username, password, expected_status, expected_reason):
+    response = make_auth_request(username, password)
 
-def test_auth():
-    auth_data = AuthRequest(
-        username="admin",
-        password="password123"
-    ).model_dump()
+    assert response.status_code == expected_status, f"Expected status code {expected_status}, got {response.status_code}"
 
-    logger.debug(f"Base url: {BASE_URL}")
-    logger.debug(f"Request body: {auth_data}")
-
-    response = requests.post(f"{BASE_URL}/auth", json=auth_data)
-    logger.debug(f"Status code: {response.status_code}")
-    logger.debug(f"Response body: {response.json()}")
-
-
-
-    assert response.status_code == 200,  f"Expected status code 200, got {response.status_code}"
     response_json = response.json()
-    token = response_json['token']
-    assert "token" in response_json, "Token is missing in the response"
-    assert len(token) > 0, "token shold not be empty"
-    assert isinstance(token, str), "Token should be a string"
+
+    if expected_reason is None:
+        assert "token" in response_json, "Token is missing in the response"
+        token = response_json["token"]
+        assert len(token) > 0, "Token should not be empty"
+        assert isinstance(token, str), "Token should be a string"
+    else:
+        assert "reason" in response_json, f"Reason is missing in the response"
+        reason = response_json["reason"]
+        assert reason == expected_reason, f"Expected reason '{expected_reason}', got '{reason}'"
+        assert "token" not in response_json, "Token should not be present in the response"
