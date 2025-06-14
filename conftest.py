@@ -10,11 +10,9 @@ load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 fake = Faker()
 
+
 def make_auth_request(username: Any, password: Any):
-    auth_data = AuthRequest(
-        username=username,
-        password=password
-    ).model_dump()
+    auth_data = AuthRequest(username=username, password=password).model_dump()
 
     logger.debug(f"Base url: {BASE_URL}")
     logger.debug(f"Request body: {auth_data}")
@@ -25,8 +23,10 @@ def make_auth_request(username: Any, password: Any):
 
     return response
 
+
 def fake_username():
     return fake.user_name()
+
 
 def fake_password():
     return fake.password()

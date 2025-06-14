@@ -1,6 +1,7 @@
 import pytest
 from conftest import make_auth_request, fake_username, fake_password
 
+
 @pytest.mark.parametrize(
     "username, password, expected_status, expected_reason",
     [
@@ -11,7 +12,7 @@ from conftest import make_auth_request, fake_username, fake_password
         ("", "password123", 200, "Bad credentials"),
         ("admin", "", 200, "Bad credentials"),
         (1, "", 200, "Bad credentials"),
-        (10, 1, 200, "Bad credentials")
+        (10, 1, 200, "Bad credentials"),
     ],
     ids=[
         "Valid credentials",
@@ -21,13 +22,15 @@ from conftest import make_auth_request, fake_username, fake_password
         "Empty username",
         "Empty password",
         "Numeric username",
-        "Numeric username and password"
-    ]
+        "Numeric username and password",
+    ],
 )
 def test_auth(username, password, expected_status, expected_reason):
     response = make_auth_request(username, password)
 
-    assert response.status_code == expected_status, f"Expected status code {expected_status}, got {response.status_code}"
+    assert (
+        response.status_code == expected_status
+    ), f"Expected status code {expected_status}, got {response.status_code}"
 
     response_json = response.json()
 
@@ -39,5 +42,9 @@ def test_auth(username, password, expected_status, expected_reason):
     else:
         assert "reason" in response_json, f"Reason is missing in the response"
         reason = response_json["reason"]
-        assert reason == expected_reason, f"Expected reason '{expected_reason}', got '{reason}'"
-        assert "token" not in response_json, "Token should not be present in the response"
+        assert (
+            reason == expected_reason
+        ), f"Expected reason '{expected_reason}', got '{reason}'"
+        assert (
+            "token" not in response_json
+        ), "Token should not be present in the response"

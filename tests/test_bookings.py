@@ -4,8 +4,7 @@ import requests
 from logger import logger
 from models.headers import Headers
 from conftest import BASE_URL
-from models.response_validation import AllBookingResponse
-
+from models.responses import AllBookingResponse
 
 
 def test_get_everything_in_booking():
@@ -17,7 +16,6 @@ def test_get_everything_in_booking():
     logger.debug(f"Status code: {response.status_code}")
     logger.debug(f"Response body: {response.json()}")
 
-
     try:
         booking_list_response = AllBookingResponse(bookings=response.json())
     except Exception as e:
@@ -26,7 +24,8 @@ def test_get_everything_in_booking():
 
     data = booking_list_response.bookings
 
-    assert response.status_code == 200, f"Expected status code 200, got {response.status_code}"
+    assert (
+        response.status_code == 200
+    ), f"Expected status code 200, got {response.status_code}"
     assert isinstance(data, list), "Data format is not a list"
     assert len(data) > 0, "Empty list. No booking ids."
-
