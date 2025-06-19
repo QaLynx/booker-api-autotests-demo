@@ -1,5 +1,7 @@
 import os
+import random
 import requests
+from models import Headers, AllBookingResponse
 from models.auth import AuthRequest
 from dotenv import load_dotenv
 from logger import logger
@@ -30,3 +32,20 @@ def fake_username():
 
 def fake_password():
     return fake.password()
+
+
+def random_booking_id():
+    header = Headers(Accept="application/json").model_dump()
+    response = requests.get(url=f"{BASE_URL}/booking", headers=header)
+
+    booking_list_response = AllBookingResponse(bookings=response.json())
+    data = booking_list_response.model_dump()
+
+    random_item_in_response = random.choice(data["bookings"])
+    random_booking_id = random_item_in_response["bookingid"]
+
+    return random_booking_id
+
+
+
+
