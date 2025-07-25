@@ -8,6 +8,19 @@ from models.responses import AllBookingResponse
 
 
 def test_get_everything_in_booking():
+    """
+    Проверяет успешное получение списка всех бронирований.
+
+    1. Отправляет GET-запрос к эндпоинту /booking с заголовком Accept: application/json.
+    2. Логирует детали запроса и ответа: заголовки, URL, статус-код, тело ответа.
+    3. Валидирует структуру ответа с помощью модели AllBookingResponse.
+    4. Убеждается, что:
+       - Статус-код 200.
+       - Тело ответа — непустой список.
+       - Данные соответствуют ожидаемой схеме.
+
+    Тест покрывает базовую доступность и корректность формата данных.
+    """
     headers = Headers(Accept="application/json").model_dump(exclude_unset=True)
     response = requests.get(url=f"{BASE_URL}/booking", headers=headers)
 
